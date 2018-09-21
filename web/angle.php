@@ -1,19 +1,36 @@
 <?php
 
+ini_set('display_errors', 'On');
+error_reporting(E_ALL | E_STRICT);
+
 // Show the Angle/Temperature chart
 // GET Parameters:
 // hours = number of hours before now() to be displayed
+// days = hours x 24
+// weeks = days x 7
 // name = iSpindle name
  
 include_once("include/common_db.php");
 include_once("include/common_db_query.php");
 
 // Check GET parameters (for now: Spindle name and Timeframe to display) 
-if(!isset($_GET['hours'])) $_GET['hours'] = defaultTimePeriod; else $_GET['hours'] = $_GET['hours'];
-if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel000'; else $_GET['name'] = $_GET['name'];
+if(!isset($_GET['hours'])) $_GET['hours'] = 0; else $_GET['hours'] = $_GET['hours'];
+if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel001'; else $_GET['name'] = $_GET['name'];
 if(!isset($_GET['reset'])) $_GET['reset'] = defaultReset; else $_GET['reset'] = $_GET['reset'];
+if(!isset($_GET['days'])) $_GET['days'] = 0; else $_GET['days'] = $_GET['days'];
+if(!isset($_GET['weeks'])) $_GET['weeks'] = 0; else $_GET['weeks'] = $_GET['weeks'];
 
-list($angle, $temperature) = getChartValues($_GET['name'], $_GET['hours'], $_GET['reset']);
+// Calculate Timeframe in Hours
+$timeFrame = $_GET['hours'] + ($_GET['days'] * 24) + ($_GET['weeks'] * 168);
+if($timeFrame == 0) $timeFrame = defaultTimePeriod;
+$tftemp = $timeFrame;
+$tfweeks = floor($tftemp / 168);
+$tftemp -= $tfweeks * 168;
+$tfdays = floor($tftemp / 24);
+$tftemp -= $tfdays * 24;
+$tfhours = $tftemp;
+
+list($angle, $temperature) = getChartValues($conn, $_GET['name'], $timeFrame, $_GET['reset']);
 
 ?>
 
@@ -52,18 +69,27 @@ $(function ()
         text: 'iSpindel: <?php echo $_GET['name'];?>'
       },
       subtitle: 
-      { text:
-       ' <?php               
-          if($_GET['reset']) 
-             {     
-             echo 'Temperatur und Winkel seit dem letzten Reset';
-             }
-           else
-             {
-             echo 'Temperatur und Winkel den letzten '.  $_GET['hours'] .  ' Stunden';
-             }
-        ?>'
-        
+      { text: ' <?php
+                  $timetext = 'Temperatur und Winkel ';               
+                  if($_GET['reset']) 
+                  {     
+                    $timetext .= 'seit dem letzten Reset: ';
+                  }
+                  else
+	                {
+                    $timetext .= 'der letzten ';
+                  }
+                  if($tfweeks != 0)
+                  {
+                    $timetext .= $tfweeks . ' Woche(n), ';
+                  }
+                  if($tfdays != 0)
+                  {
+                    $timetext .= $tfdays . ' Tag(e), ';
+                  }
+                  $timetext .= $tfhours . ' Stunde(n).';
+                  echo $timetext;
+                ?>'
       },
       xAxis: 
       {
@@ -196,3 +222,4 @@ $(function ()
  
 </body>
 </html>
+

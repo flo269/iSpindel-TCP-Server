@@ -1,6 +1,6 @@
 <?php
 
-// Show battery status as a chart
+// Show WiFi connection quality as a gauge
 // GET Parameters:
 // name = iSpindle name
  
@@ -10,7 +10,7 @@ include_once("include/common_db_query.php");
 // Check GET parameters (for now: Spindle name and Timeframe to display) 
 if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel000'; else $_GET['name'] = $_GET['name'];
 
-list($time, $temperature, $angle, $battery) = getCurrentValues($conn, $_GET['name']);
+list($time, $temperature, $angle, $battery, $interval, $rssi) = getCurrentValues2($conn, $_GET['name']);
 
 ?>
 
@@ -43,7 +43,7 @@ $(function ()
       },
       title: 
       {
-        text: 'Aktueller Ladezustand: <?php echo $_GET['name'];?>'
+        text: 'Aktuelle WiFi Empfangsqualität: <?php echo $_GET['name'];?>'
       },
 
       pane: {
@@ -81,8 +81,8 @@ $(function ()
 
     // the value axis
     yAxis: {
-        min: 2.7,
-        max: 4.5,
+        min: -90,
+        max: -30,
 
         minorTickInterval: 'auto',
         minorTickWidth: 1,
@@ -93,35 +93,35 @@ $(function ()
         tickPixelInterval: 30,
         tickWidth: 2,
         tickPosition: 'inside',
-        tickLength: 10,
+        tickLength: 15,
         tickColor: '#666',
         labels: {
             step: 2,
             rotation: 'auto'
         },
         title: {
-            text: 'Volt'
+            text: 'RSSI (dBm)'
         },
         plotBands: [{
-            from: 3.5,
-            to: 4.5,
+            from: -67,
+            to: -30,
             color: '#55BF3B' // green
         }, {
-            from: 3.1,
-            to: 3.6,
+            from: -75,
+            to: -67,
             color: '#DDDF0D' // yellow
         }, {
-            from: 2.7,
-            to: 3.1,
+            from: -99,
+            to: -75,
             color: '#DF5353' // red
         }]
     },
 
     series: [{
-        name: 'battery',
-        data: [<?php echo $battery;?>],
+        name: 'RSSI',
+        data: [<?php echo $rssi;?>],
         tooltip: {
-            valueSuffix: ' Volt'
+            valueSuffix: ' dBm'
         }
       }]
     }); // chart   

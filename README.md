@@ -1,7 +1,38 @@
-# genericTCP
-#### (iSpindle.py Version 1.3.1)
+# iSpindel Generic TCP Server
+#### (iSpindle.py Version 1.3.3)
 
 [English Version](README_en.md)
+
+**Neu (15.02.2018)**
+Neues Diagramm wifi.php zeigt die zuletzt gemessene und übertragene Verbindungsqualität zum WLAN.        
+angle.php, plato.php und plato4.php wurden erweitert um neue Parameter "days" und "weeks".        
+Die Untertitel dieser Diagramme wurden angepasst, um dies zu reflektieren und deren Lesbarkeit zu erhöhen.      
+3600 Stunden werden jetzt angezeigt als 21 Wochen, 3 Tage.     
+Die Parameter können beliebig kombiniert werden.
+
+**Neu (12.02.2018)**
+iSpindle.py Version 1.4.0      
+Angepasst an [Sam's iSpindel](https://github.com/universam1/iSpindel) Firmware 5.8 und aufwärts.      
+Die nunmehr mitgesendeten Daten (Intervall, WLAN Empfangsqualität) werden jetzt mit abgefragt und in der Datenbank hinterlegt.
+Alles sollte nach wie vor rückwärtskompatibel sein.
+Im Debug Modus wird ein Hinweis ausgegeben, falls die iSpindel Firmware "veraltet" ist.
+Bitte bei bestehenden Installationen die Datenbank anpassen und um die nötigen Felder erweitern, siehe MySQL_Update-3.sql Skript.
+
+**Neu (20.01.2018)**     
+iSpindle.py Version 1.3.3     
+Neuer Parameter UBI_USE_ISPINDLE_TOKEN     
+Die neue Version erlaubt das in der iSpindel Konfiguration vorgesehene Feld "Token" als Ubidots Token zu verwenden.     
+Das im Skript global gesetzte Ubidots Token wird durch das in der iSpindel hinterlegte überschrieben, falls diese Option ausgewählt ist.     
+Damit wird es möglich, nur die Daten einzelner iSpindeln weiterzuleiten oder einzelnen iSpindeln verschiedene Ubidots Token zuzuweisen.     
+Um die Weiterleitung für einzelne iSpindeln zu unterdrücken, wird das Feld "Token" in der iSpindel Konfiguration leer gelassen, oder (falls das Feld für Kommentare etc. genutzt wird) mit einem Asterisk ("*") eingeleitet.     
+
+**Neu (28.11.2017)**     
+Interim Release.      
+Diagramme benutzen jetzt die mysqli Library.      
+Damit ist die Kompatibilität zu PHP7 (Debian/Raspbian Stretch) wieder hergestellt.      
+Die Dokumentation wurde entsprechend angepasst.      
+Die Änderungen sollten rückwärtskompatibel sein.      
+Das neue Repo wurde in den Docs ebenfalls berücksichtigt.      
 
 **Neu (27.09.2017)**  
 update.sh: Skript für automatisches Update auf neue Versionen
@@ -132,10 +163,13 @@ Falls der Server nach außen offen ist (z.B. extern gehostet), empfehle ich aber
 #### Ubidots Anbindung
 
 	UBIDOTS = 1
+	UBI_USE_ISPINDLE_TOKEN = 1
 	UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 **UBIDOTS** = 0 schaltet die Ubidots Weiterleitung aus.    
-In **UBI\_TOKEN** das eigene Token eintragen (siehe Dokumentation der iSpindel) und das war's auch schon.
+In **UBI\_TOKEN** das eigene Token eintragen (siehe Dokumentation der iSpindel).
+Dieses gilt dann global (also für alle angeschlossenen iSpindeln).
+Die neuere Methode (empfohlen) ist, das Token stattdessen direkt in der iSpindel Konfiguration einzutragen und den Parameter UBI_USE_ISPINDLE_TOKEN auf 1 (Standardeinstellung) zu lassen.
 
 Die Daten sollten nun sowohl wie gewohnt in Ubidots erscheinen als auch auf Eurem lokalen Server.
 Auch neue iSpindeln (Devices) lassen sich so problemlos anlegen, für Ubidots macht es keinen Unterschied, ob die Daten von der iSpindel direkt kommen oder vom lokalen Server.

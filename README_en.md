@@ -1,5 +1,35 @@
-# genericTCP
-#### (iSpindle.py Version 1.3.1)
+# iSpindel Generic TCP Server
+#### (iSpindle.py Version 1.3.3)
+
+
+**New (15.02.2018)**
+New chart wifi.php shows current connection quality (RSSI).          
+angle.php, plato.php and plato4.php have been updated and accept the new parameters "days" and "weeks".        
+Their subtitles will reflect these changes now and will make the charts easier to read.        
+For example, a timeframe of 3600 hours will now be displayed as 21 weeks, 3 days and 0 hours.      
+These parameters can be combined completely at will.
+
+**New (12.02.2018)**
+iSpindle.py Version 1.4.0        
+Updated to [Sam's iSpindel](https://github.com/universam1/iSpindel) Firmware 5.8 and higher.         
+Newly sent data (interval, Wi-Fi signal quality) will now be registered and stored to the database accordingly.
+Everything should still be backwards compatible.
+Debug mode will show a message asking you to consider updating the iSpindel firmware, if an outdated version is being detected.
+When updating an existing version of this script, please take a look at MySQL_Update-3.sql and add the required fields to your database accordingly before using this new version of the python script.
+
+
+**New (20.01.2018)**     
+iSpindle.py Version 1.3.3     
+The iSpindle config option "token" can now be used as Ubidots Token, in order to only forward the data of certain devices, or use different tokens for several of them.     
+Leave blank or put a leading asterisk ("*") in order to exclude an iSpindle from Ubidots forwarding.     
+This is now the default behavior (Ubidots Forwarding switched on; new parameter UBI_USE_ISPINDLE_TOKEN enabled, too).     
+The global UBIDOTS_TOKEN parameter will now only be used if UBI_USE_ISPINDLE_TOKEN is disabled while UBIDOTS is enabled.     
+
+**New (25.11.2017)**     
+Interim Release.      
+Restored compatibility with Raspbian/Debian Jessie and PHP7.      
+Using mysqli Library now.      
+Docs have been updated accordingly and also reflect the new mirror.      
 
 **New (27.09.2017)**  
 Added Update Scripts  
@@ -138,10 +168,12 @@ If unsure, set it to 0.
 #### Ubidots Forwarding
 
 	UBIDOTS = 1
+	UBI_USE_ISPINDLE_TOKEN = 1
 	UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 **UBIDOTS** = 0 will switch off Ubidots Forwarding.    
-**UBI\_TOKEN** is where you enter your personal Ubidots Token (see iSpindle docs).
+**UBI\_TOKEN** is where you can globally (i.e. for all your devices) enter your personal Ubidots Token (see iSpindle docs).
+In more recent versions (beginning with 1.3.3) it is recommended to enter your Ubidots token within the iSpindel's Configuration and use the default UBI_USE_ISPINDLE_TOKEN parameter setting of "1" (true), so that the Script will use this entry instead, for each iSpindel individually, as is the case with the standard (direct) connection.
 
 Your data should now show up in Ubidots as usual, plus you have it available locally to fiddle around with.    
 Ubidots will not know the difference and even create new devices just as well.
